@@ -1,25 +1,45 @@
 package application;
-	
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
+import javafx.stage.Stage;
 
 public class Main extends Application {
+	
+	private static Scene cenaPrincipal;
+	
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
+			FXMLLoader carregador = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
+			ScrollPane scrollPane = carregador.load();
+			
+			//Ajusta tamanho do ScrollPane para o tamanho exato da ViewPort
+			scrollPane.setFitToHeight(true);
+			scrollPane.setFitToWidth(true);			
+
+			//Cria a cena passando o scrollpane como argumento
+			cenaPrincipal = new Scene(scrollPane);
+			
+			primaryStage.setScene(cenaPrincipal);
+			primaryStage.setTitle("PiseBem - Calçados Incríveis");
 			primaryStage.show();
-		} catch(Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	//Getter da cena principal
+	public static Scene getCenaPrincipal() {
+		return cenaPrincipal;
+	}
+	
+	//Main do Java
 	public static void main(String[] args) {
 		launch(args);
 	}
