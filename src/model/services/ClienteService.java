@@ -1,19 +1,18 @@
 package model.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.ClienteDao;
+import model.dao.DaoFabrica;
 import model.domain.Cliente;
 
 public class ClienteService {
+	
+	
+	//Usa a classe auxiliar para criar um ClienteDao do JDBC
+	private ClienteDao acessoDados = DaoFabrica.criaClienteDao();
 
-	public List<Cliente> buscarTodos() {
-		
-		List<Cliente> lista = new ArrayList<>();
-		lista.add(new Cliente(1, "Brunno"));
-		lista.add(new Cliente(2, "Giovanna"));
-		lista.add(new Cliente(3, "Rosangela"));
-		
-		return lista;
+	public List<Cliente> buscarTodos() {		
+		return acessoDados.listarTodos();
 	}
 }

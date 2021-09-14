@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="367.0" prefWidth="414.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ListaClienteController">
+<VBox prefHeight="318.0" prefWidth="1057.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ListaClienteController">
    <children>
       <Label text="Cadastro de Clientes">
          <font>
@@ -44,7 +44,15 @@
           <TableColumn fx:id="colunaNome" prefWidth="81.0" text="Nome" />
             <TableColumn fx:id="colunaSobrenome" prefWidth="86.0" text="Sobrenome" />
             <TableColumn fx:id="colunaCpf" prefWidth="66.0" text="CPF" />
-            <TableColumn fx:id="colunaEmail" prefWidth="140.0" text="E-mail" />
+            <TableColumn fx:id="colunaEmail" prefWidth="88.0" text="E-mail" />
+            <TableColumn fx:id="colunaRua" prefWidth="112.0" text="Rua" />
+            <TableColumn fx:id="colunaNumero" prefWidth="58.0" text="Número" />
+            <TableColumn fx:id="colunaBairro" prefWidth="81.0" text="Bairro" />
+            <TableColumn fx:id="colunaComplemento" prefWidth="75.0" text="Complemento" />
+            <TableColumn fx:id="colunaCidade" prefWidth="75.0" text="Cidade" />
+            <TableColumn fx:id="colunaEstado" prefWidth="75.0" text="Estado" />
+            <TableColumn fx:id="colunaDdd" prefWidth="75.0" text="DDD" />
+            <TableColumn fx:id="colunaTelefone" prefWidth="75.0" text="Telefone" />
         </columns>
          <VBox.margin>
             <Insets />
