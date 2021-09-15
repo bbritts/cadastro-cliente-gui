@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -147,8 +148,11 @@ public class ListaClienteController implements Initializable{
 			
 			//Instancia um stage na frente do outro para criar a janela de diálogo
 			Stage stageDialogo = new Stage();
-			stageDialogo.setTitle("Informe os dados do cliente");			
+			stageDialogo.setTitle("Informe os dados do cliente");		
 			stageDialogo.setScene(new Scene(painel));
+			
+			//Muda o icone na barra de tarefa
+			stageDialogo.getIcons().add(new Image("https://raw.githubusercontent.com/bbritts/cadastro-cliente-gui/master/assets/icon.png"));
 			
 			//Torna a janela não redimencionável
 			stageDialogo.setResizable(false);

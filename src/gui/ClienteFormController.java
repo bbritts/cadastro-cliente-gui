@@ -90,7 +90,8 @@ public class ClienteFormController implements Initializable{
 	}
 
 	@Override
-	public void initialize(URL url, ResourceBundle rb) {		
+	public void initialize(URL url, ResourceBundle rb) {
+		inicializaCampos();
 	}
 	
 	public void inicializaCampos() {
@@ -98,8 +99,21 @@ public class ClienteFormController implements Initializable{
 		//Métodos encontrados na classe Restricoes no /gui/util 
 		Restricoes.textFieldInteiro(txtId);
 		Restricoes.textFieldApenasLetras(txtNome);
-		Restricoes.textFieldTamanhoMaximo(txtNome, 64);
+		Restricoes.textFieldTamanhoMaximo(txtNome, 32);
 		Restricoes.textFieldApenasLetras(txtSobrenome);
-		Restricoes.textFieldTamanhoMaximo(txtSobrenome, 128);		
+		Restricoes.textFieldTamanhoMaximo(txtSobrenome, 64);
+		Restricoes.textFieldInteiro(txtCpf);
+		Restricoes.textFieldTamanhoMaximo(txtCpf, 11);	
+		Restricoes.textFieldTamanhoMaximo(txtEmail, 64);
+		Restricoes.textFieldTamanhoMaximo(txtRua, 64);
+		Restricoes.textFieldTamanhoMaximo(txtNumero, 8);
+		Restricoes.textFieldTamanhoMaximo(txtBairro, 64);
+		Restricoes.textFieldTamanhoMaximo(txtComplemento, 128);
+		Restricoes.textFieldApenasLetras(txtCidade);
+		Restricoes.textFieldTamanhoMaximo(txtCidade, 64);
+		Restricoes.textFieldInteiro(txtDdd);
+		Restricoes.textFieldTamanhoMaximo(txtDdd, 2);
+		Restricoes.textFieldInteiro(txtNumeroTel);
+		Restricoes.textFieldTamanhoMaximo(txtNumeroTel, 12);	
 	}
 }
