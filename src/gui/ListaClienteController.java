@@ -85,7 +85,11 @@ public class ListaClienteController implements Initializable{
 		//Pega a referência do stage atual a partir do evento recebido por parâmetro
 		Stage parentStage = Utilitarios.stageAtual(evento);
 		
-		criaFormularioCadastro("/gui/ClienteForm.fxml", parentStage);
+		//Cria um objeto cliente vazio para novos cadastros
+		Cliente cliente = new Cliente();
+		
+		//Cria o formulário de cadastro passando a referência do objeto cliente vazio
+		criaFormularioCadastro(cliente, "/gui/ClienteForm.fxml", parentStage);
 	}
 	
 	//Setter do servico para injetar dependência a partir de outro lugar (inversão de controle)
@@ -140,11 +144,18 @@ public class ListaClienteController implements Initializable{
 	
 	
 	//Método requer referência do stage da janela que criou a janela de dialogo com usuário
-	private void criaFormularioCadastro(String caminhoView, Stage parentStage) {
+	private void criaFormularioCadastro(Cliente cliente, String caminhoView, Stage parentStage) {
 		try {
 			//Carrega a view principal recebida por parâmetro
 			FXMLLoader carregador = new FXMLLoader(getClass().getResource(caminhoView));
 			Pane painel = carregador.load();
+			
+			//Pega a referência do controlador para injetar a dependência de um cliente
+			ClienteFormController controlador = carregador.getController();
+			controlador.setCliente(cliente);
+			
+			//Carrega no formulário com as informações do cliente injetado
+			controlador.atualizaDadosForm();
 			
 			//Instancia um stage na frente do outro para criar a janela de diálogo
 			Stage stageDialogo = new Stage();

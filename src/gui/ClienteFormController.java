@@ -12,9 +12,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import model.domain.Cliente;
 import model.domain.enums.SiglaEstado;
 
 public class ClienteFormController implements Initializable{
+	
+	private Cliente cliente;
 	
 	@FXML
 	private TextField txtId;
@@ -79,6 +82,10 @@ public class ClienteFormController implements Initializable{
 	@FXML
 	private Button btCancelar;
 	
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+	
 	//Métodos a executar ao clicar nos botões
 	@FXML
 	public void onBtSalvarAction() {
@@ -115,5 +122,30 @@ public class ClienteFormController implements Initializable{
 		Restricoes.textFieldTamanhoMaximo(txtDdd, 2);
 		Restricoes.textFieldInteiro(txtNumeroTel);
 		Restricoes.textFieldTamanhoMaximo(txtNumeroTel, 12);	
+	}
+	
+	public void atualizaDadosForm() {
+		
+		//Trata o erro do cliente estar vazio
+		if(cliente == null) {
+			throw new IllegalArgumentException("Cliente estava vazio");
+		}
+		
+		//Mostra os valores do cliente instanciado nas caixas de texto
+		txtId.setText(String.valueOf(cliente.getId()));
+		txtNome.setText(cliente.getNome());
+		txtSobrenome.setText(cliente.getSobrenome());
+		txtCpf.setText(cliente.getCpf());
+		txtEmail.setText(cliente.getEmail());
+		txtRua.setText(cliente.getEndereco().getRua());
+		txtNumero.setText(cliente.getEndereco().getNumero());
+		txtBairro.setText(cliente.getEndereco().getBairro());
+		txtComplemento.setText(cliente.getEndereco().getComplemento());
+		txtCidade.setText(cliente.getEndereco().getCidade());
+		
+		//TODO - implementar ComboBox e RadioButton de siglas de estados e tipos de telefone
+		/*
+		 * 
+		 */
 	}
 }

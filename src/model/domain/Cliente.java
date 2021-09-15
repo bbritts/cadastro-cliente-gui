@@ -16,7 +16,9 @@ public class Cliente implements Serializable{
 	private Telefone telefone;
 	
 	//Construtor Padrão
-	public Cliente() {		
+	public Cliente() {
+		setEndereco(new Endereco());
+		setTelefone(new Telefone());
 	}
 	
 	//Construtor
