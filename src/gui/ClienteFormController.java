@@ -1,6 +1,5 @@
 package gui;
 
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -12,8 +11,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import model.domain.Cliente;
 import model.domain.enums.SiglaEstado;
+import model.domain.enums.TipoTelefone;
 
 public class ClienteFormController implements Initializable{
 	
@@ -70,6 +71,8 @@ public class ClienteFormController implements Initializable{
 	@FXML
 	private ComboBox<SiglaEstado> cbEstado;
 	
+	
+	
 	@FXML
 	private RadioButton rbResidencial;
 	@FXML
@@ -121,7 +124,13 @@ public class ClienteFormController implements Initializable{
 		Restricoes.textFieldInteiro(txtDdd);
 		Restricoes.textFieldTamanhoMaximo(txtDdd, 2);
 		Restricoes.textFieldInteiro(txtNumeroTel);
-		Restricoes.textFieldTamanhoMaximo(txtNumeroTel, 12);	
+		Restricoes.textFieldTamanhoMaximo(txtNumeroTel, 12);
+		
+		//Cria grupo dos botões para tipo de telefone
+		final ToggleGroup grupo = new ToggleGroup();
+		rbResidencial.setToggleGroup(grupo);
+		rbCelular.setToggleGroup(grupo);
+		rbComercial.setToggleGroup(grupo);		
 	}
 	
 	public void atualizaDadosForm() {
@@ -142,6 +151,19 @@ public class ClienteFormController implements Initializable{
 		txtBairro.setText(cliente.getEndereco().getBairro());
 		txtComplemento.setText(cliente.getEndereco().getComplemento());
 		txtCidade.setText(cliente.getEndereco().getCidade());
+		
+		
+		//Verifica qual dos radio buttons deve ser selecionado
+		if (cliente.getTelefone().getTipo() != null) {
+			
+			if(cliente.getTelefone().getTipo() == TipoTelefone.RESIDENCIAL) {
+				rbResidencial.setSelected(true);
+			} else if (cliente.getTelefone().getTipo() == TipoTelefone.CELULAR){
+				rbCelular.setSelected(true);			
+			} else {
+				rbComercial.setSelected(true);
+			}
+		}		
 		
 		//TODO - implementar ComboBox e RadioButton de siglas de estados e tipos de telefone
 		/*
