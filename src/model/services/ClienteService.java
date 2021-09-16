@@ -15,4 +15,14 @@ public class ClienteService {
 	public List<Cliente> buscarTodos() {		
 		return acessoDados.listarTodos();
 	}
+	
+	public void cadastrarOuAtualizar(Cliente cliente) {
+		
+		//Se o id do objeto for nulo, a intenção é salvar
+		if(cliente.getId() == null) {
+			acessoDados.insere(cliente);
+		} else {
+			acessoDados.atualiza(cliente);
+		}		
+	}
 }

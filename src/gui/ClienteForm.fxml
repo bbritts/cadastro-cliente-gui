@@ -103,7 +103,7 @@
             <TextField fx:id="txtCidade" GridPane.columnIndex="1" GridPane.rowIndex="11" />
             <TextField fx:id="txtDdd" GridPane.columnIndex="1" GridPane.rowIndex="14" />
             <TextField fx:id="txtNumeroTel" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-            <ComboBox fx:id="cbEstado" prefHeight="25.0" prefWidth="47.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <ComboBox fx:id="cbxEstado" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
          </children>
       </GridPane>
    </children>

@@ -150,9 +150,11 @@ public class ListaClienteController implements Initializable{
 			FXMLLoader carregador = new FXMLLoader(getClass().getResource(caminhoView));
 			Pane painel = carregador.load();
 			
-			//Pega a referência do controlador para injetar a dependência de um cliente
+			//Pega a referência do controlador para injetar a dependência de um cliente e servico
 			ClienteFormController controlador = carregador.getController();
 			controlador.setCliente(cliente);
+			controlador.setClienteService(new ClienteService());
+			
 			
 			//Carrega no formulário com as informações do cliente injetado
 			controlador.atualizaDadosForm();
@@ -178,7 +180,7 @@ public class ListaClienteController implements Initializable{
 			stageDialogo.showAndWait();			
 		}
 		catch (IOException e) {
-			Alertas.mostraAlerta("IO Exeception", "Erro ao carregar a View", e.getMessage(), AlertType.ERROR);
+			Alertas.mostraAlerta("IO Exception", "Erro ao carregar a View", e.getMessage(), AlertType.ERROR);
 		}
 	}
 }

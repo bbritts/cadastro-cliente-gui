@@ -1,6 +1,11 @@
 package gui.util;
 
+import java.util.Objects;
+
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import model.domain.enums.SiglaEstado;
 
 public class Restricoes {
 
@@ -34,5 +39,5 @@ public class Restricoes {
 	            txt.setText(newValue.replaceAll("[^\\sa-zA-Z]", ""));
 	        }
 	    });
-	}	
+	}
 }

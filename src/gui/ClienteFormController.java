@@ -3,9 +3,14 @@ package gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import database.DBException;
+import gui.util.Alertas;
 import gui.util.Restricoes;
+import gui.util.Utilitarios;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -15,11 +20,14 @@ import javafx.scene.control.ToggleGroup;
 import model.domain.Cliente;
 import model.domain.enums.SiglaEstado;
 import model.domain.enums.TipoTelefone;
+import model.services.ClienteService;
 
-public class ClienteFormController implements Initializable{
-	
+public class ClienteFormController implements Initializable {
+
 	private Cliente cliente;
-	
+	private ClienteService servico;
+	final ToggleGroup grupoRadioButton = new ToggleGroup();
+
 	@FXML
 	private TextField txtId;
 	@FXML
@@ -44,7 +52,7 @@ public class ClienteFormController implements Initializable{
 	private TextField txtDdd;
 	@FXML
 	private TextField txtNumeroTel;
-	
+
 	@FXML
 	private Label labelErroNome;
 	@FXML
@@ -67,53 +75,105 @@ public class ClienteFormController implements Initializable{
 	private Label labelErroDdd;
 	@FXML
 	private Label labelErroNumeroTel;
-	
+
 	@FXML
-	private ComboBox<SiglaEstado> cbEstado;
-	
-	
-	
+	private ComboBox<SiglaEstado> cbxEstado;
+
 	@FXML
 	private RadioButton rbResidencial;
 	@FXML
 	private RadioButton rbCelular;
 	@FXML
 	private RadioButton rbComercial;
-	
+
 	@FXML
 	private Button btSalvar;
 	@FXML
 	private Button btCancelar;
-	
+
+	// Métodos setter para injetar a dependência
+
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	
-	//Métodos a executar ao clicar nos botões
-	@FXML
-	public void onBtSalvarAction() {
-		System.out.println("Salvei!");
+
+	public void setClienteService(ClienteService servico) {
+		this.servico = servico;
 	}
+
+	// Métodos a executar ao clicar nos botões
 	@FXML
-	public void onBtCancelarAction() {
-		System.out.println("Cancelei!");
+	public void onBtSalvarAction(ActionEvent evento) {
+		if (cliente == null) {
+			throw new IllegalStateException("Cliente estava nulo");
+		}
+		
+		if (servico == null) {
+			throw new IllegalStateException("Serviço estava nulo");
+		}
+		
+		try {
+			cliente = capturaDadosForm();		
+			servico.cadastrarOuAtualizar(cliente);
+			
+			//Método para fechar a janela após os dados serem salvos
+			Utilitarios.stageAtual(evento).close();
+		}
+		catch (DBException e) {
+			Alertas.mostraAlerta("Erro ao salvar o objeto", null, e.getMessage(), AlertType.ERROR);
+		}		
+	}
+
+	@FXML
+	public void onBtCancelarAction(ActionEvent evento) {
+		//Método para fechar a janela após os dados serem salvos
+		Utilitarios.stageAtual(evento).close();
+	}
+
+	private Cliente capturaDadosForm() {
+
+		Cliente novoCliente = new Cliente();
+
+		//novoCliente.setId(Utilitarios.tentaConverterParaInt(txtId.getText()));
+		novoCliente.setNome(txtNome.getText());
+		novoCliente.setSobrenome(txtSobrenome.getText());
+		novoCliente.setCpf(txtCpf.getText());
+		novoCliente.setEmail(txtEmail.getText());
+		novoCliente.getEndereco().setRua(txtRua.getText());
+		novoCliente.getEndereco().setNumero(txtNumero.getText());
+		novoCliente.getEndereco().setBairro(txtBairro.getText());
+		novoCliente.getEndereco().setComplemento(txtComplemento.getText());
+		novoCliente.getEndereco().setCidade(txtCidade.getText());
+		novoCliente.getEndereco().setSigla_estado(cbxEstado.getValue());
+		novoCliente.getTelefone().setDdd(txtDdd.getText());
+		novoCliente.getTelefone().setTelefone(txtNumeroTel.getText());
+
+		RadioButton radioButtonSelecionado = (RadioButton) grupoRadioButton.getSelectedToggle();
+		novoCliente.getTelefone().setTipo(TipoTelefone.valueOf(radioButtonSelecionado.getText().toUpperCase()));		
+
+		return novoCliente;
 	}
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		inicializaCampos();
+		// Insere as restrições de caracteres nas caixas de texto
+		inicializaTextFields();
+		// Cria grupo dos botões para tipo de telefone
+		agrupaRadioButtons();
+		// Popula o combobox com as siglas dos estados
+		preencheComboBox();
 	}
-	
-	public void inicializaCampos() {
-		
-		//Métodos encontrados na classe Restricoes no /gui/util 
+
+	public void inicializaTextFields() {
+
+		// Métodos encontrados na classe Restricoes no /gui/util
 		Restricoes.textFieldInteiro(txtId);
 		Restricoes.textFieldApenasLetras(txtNome);
 		Restricoes.textFieldTamanhoMaximo(txtNome, 32);
 		Restricoes.textFieldApenasLetras(txtSobrenome);
 		Restricoes.textFieldTamanhoMaximo(txtSobrenome, 64);
 		Restricoes.textFieldInteiro(txtCpf);
-		Restricoes.textFieldTamanhoMaximo(txtCpf, 11);	
+		Restricoes.textFieldTamanhoMaximo(txtCpf, 11);
 		Restricoes.textFieldTamanhoMaximo(txtEmail, 64);
 		Restricoes.textFieldTamanhoMaximo(txtRua, 64);
 		Restricoes.textFieldTamanhoMaximo(txtNumero, 8);
@@ -125,22 +185,26 @@ public class ClienteFormController implements Initializable{
 		Restricoes.textFieldTamanhoMaximo(txtDdd, 2);
 		Restricoes.textFieldInteiro(txtNumeroTel);
 		Restricoes.textFieldTamanhoMaximo(txtNumeroTel, 12);
-		
-		//Cria grupo dos botões para tipo de telefone
-		final ToggleGroup grupo = new ToggleGroup();
-		rbResidencial.setToggleGroup(grupo);
-		rbCelular.setToggleGroup(grupo);
-		rbComercial.setToggleGroup(grupo);		
 	}
-	
+
+	private void preencheComboBox() {
+		cbxEstado.getItems().addAll(SiglaEstado.values());
+	}
+
+	private void agrupaRadioButtons() {
+		rbResidencial.setToggleGroup(grupoRadioButton);
+		rbCelular.setToggleGroup(grupoRadioButton);
+		rbComercial.setToggleGroup(grupoRadioButton);
+	}
+
 	public void atualizaDadosForm() {
-		
-		//Trata o erro do cliente estar vazio
-		if(cliente == null) {
+
+		// Trata o erro do cliente estar vazio
+		if (cliente == null) {
 			throw new IllegalArgumentException("Cliente estava vazio");
 		}
-		
-		//Mostra os valores do cliente instanciado nas caixas de texto
+
+		// Mostra os valores do cliente instanciado nas caixas de texto
 		txtId.setText(String.valueOf(cliente.getId()));
 		txtNome.setText(cliente.getNome());
 		txtSobrenome.setText(cliente.getSobrenome());
@@ -151,23 +215,37 @@ public class ClienteFormController implements Initializable{
 		txtBairro.setText(cliente.getEndereco().getBairro());
 		txtComplemento.setText(cliente.getEndereco().getComplemento());
 		txtCidade.setText(cliente.getEndereco().getCidade());
-		
-		
-		//Verifica qual dos radio buttons deve ser selecionado
+		txtDdd.setText(cliente.getTelefone().getDdd());
+		txtNumeroTel.setText(cliente.getTelefone().getTelefone());
+
+		// Verifica qual dos radio buttons deve ser selecionado
+		selecionaRadioButton();
+
+		selecionaItemComboBox();
+	}
+
+	// TODO - Não testado
+	private void selecionaItemComboBox() {
+
+		for (SiglaEstado sigla : SiglaEstado.values()) {
+
+			if (cliente.getEndereco().getSigla_estado() == sigla) {
+				cbxEstado.setValue(sigla);
+			}
+		}
+	}
+
+	// TODO - Não testado
+	private void selecionaRadioButton() {
 		if (cliente.getTelefone().getTipo() != null) {
-			
-			if(cliente.getTelefone().getTipo() == TipoTelefone.RESIDENCIAL) {
+
+			if (cliente.getTelefone().getTipo() == TipoTelefone.RESIDENCIAL) {
 				rbResidencial.setSelected(true);
-			} else if (cliente.getTelefone().getTipo() == TipoTelefone.CELULAR){
-				rbCelular.setSelected(true);			
+			} else if (cliente.getTelefone().getTipo() == TipoTelefone.CELULAR) {
+				rbCelular.setSelected(true);
 			} else {
 				rbComercial.setSelected(true);
 			}
-		}		
-		
-		//TODO - implementar ComboBox e RadioButton de siglas de estados e tipos de telefone
-		/*
-		 * 
-		 */
+		}
 	}
 }

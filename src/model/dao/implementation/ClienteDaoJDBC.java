@@ -88,8 +88,8 @@ public class ClienteDaoJDBC implements ClienteDao {
 		st.setString(2, cliente.getEndereco().getRua());
 		st.setString(3, cliente.getEndereco().getNumero());
 		st.setString(4, cliente.getEndereco().getBairro());
-		st.setString(5, cliente.getEndereco().getComplemento());
-		st.setString(6, cliente.getEndereco().getCidade());
+		st.setString(5, cliente.getEndereco().getComplemento());		
+		st.setString(6, cliente.getEndereco().getCidade());		
 		st.setString(7, cliente.getEndereco().getSigla_estado().toString());
 
 		if (st.executeUpdate() < 1) {

@@ -10,4 +10,13 @@ public class Utilitarios {
 		
 		return (Stage) ((Node) evento.getSource()).getScene().getWindow();
 	}
+	
+	public static Integer tentaConverterParaInt(String string) {
+		try {
+			return Integer.parseInt(string);
+		}
+		catch (NumberFormatException e) {
+			return null;
+		}
+	}
 }

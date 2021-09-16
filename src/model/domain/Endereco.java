@@ -63,12 +63,7 @@ public class Endereco implements Serializable {
 	}
 
 	public void setComplemento(String complemento) {
-
-		if (complemento == null) {
-			this.complemento = "null";
-		} else {
-			this.complemento = complemento;
-		}
+		this.complemento = complemento;
 	}
 
 	public String getCidade() {
@@ -84,6 +79,7 @@ public class Endereco implements Serializable {
 	}
 
 	public void setSigla_estado(SiglaEstado sigla_estado) {
+
 		this.sigla_estado = sigla_estado;
 	}
 
