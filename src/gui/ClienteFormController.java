@@ -170,7 +170,7 @@ public class ClienteFormController implements Initializable {
 		RadioButton radioButtonSelecionado = (RadioButton) grupoRadioButton.getSelectedToggle();
 		validaDados(excecao, radioButtonSelecionado);		
 		
-		//novoCliente.setId(Utilitarios.tentaConverterParaInt(txtId.getText()));
+		novoCliente.setId(Utilitarios.tentaConverterParaInt(txtId.getText()));
 		novoCliente.setNome(txtNome.getText());
 		novoCliente.setSobrenome(txtSobrenome.getText());
 		novoCliente.setCpf(txtCpf.getText());		

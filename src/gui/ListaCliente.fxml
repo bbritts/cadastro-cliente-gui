@@ -53,6 +53,7 @@
             <TableColumn fx:id="colunaEstado" prefWidth="75.0" text="Estado" />
             <TableColumn fx:id="colunaDdd" prefWidth="75.0" text="DDD" />
             <TableColumn fx:id="colunaTelefone" prefWidth="75.0" text="Telefone" />
+            <TableColumn fx:id="colunaEditar" prefWidth="75.0" />
         </columns>
          <VBox.margin>
             <Insets />
