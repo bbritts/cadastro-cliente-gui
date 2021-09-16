@@ -2,8 +2,11 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import database.DBException;
 import gui.listeners.ListenerDadosAlterados;
@@ -23,6 +26,7 @@ import javafx.scene.control.ToggleGroup;
 import model.domain.Cliente;
 import model.domain.enums.SiglaEstado;
 import model.domain.enums.TipoTelefone;
+import model.exceptions.ExcecaoValidacao;
 import model.services.ClienteService;
 
 public class ClienteFormController implements Initializable {
@@ -30,7 +34,12 @@ public class ClienteFormController implements Initializable {
 	private Cliente cliente;
 	private ClienteService servico;
 	final ToggleGroup grupoRadioButton = new ToggleGroup();
+	
+	//Cria lista de listeners de eventos
 	private List<ListenerDadosAlterados> listenersDadosAlterados = new ArrayList<>();
+	
+	//ISSO AQUI É NOVO	
+	public Map<String, Label> associaLabelErro = new HashMap<>();	
 
 	@FXML
 	private TextField txtId;
@@ -76,9 +85,13 @@ public class ClienteFormController implements Initializable {
 	@FXML
 	private Label labelErroCidade;
 	@FXML
+	private Label labelErroEstado;
+	@FXML
 	private Label labelErroDdd;
 	@FXML
 	private Label labelErroNumeroTel;
+	@FXML
+	private Label labelErroTipoTel;
 
 	@FXML
 	private ComboBox<SiglaEstado> cbxEstado;
@@ -134,6 +147,9 @@ public class ClienteFormController implements Initializable {
 			//Método para fechar a janela após os dados serem salvos
 			Utilitarios.stageAtual(evento).close();
 		}
+		catch (ExcecaoValidacao e) {
+			mostraMsgErroValidacao(e.getErros());
+		}
 		catch (DBException e) {
 			Alertas.mostraAlerta("Erro ao salvar o objeto", null, e.getMessage(), AlertType.ERROR);
 		}		
@@ -146,13 +162,21 @@ public class ClienteFormController implements Initializable {
 	}
 
 	private Cliente capturaDadosForm() {
+		
+		ExcecaoValidacao excecao = new ExcecaoValidacao("Erro ao validar os dados");
 
 		Cliente novoCliente = new Cliente();
-
+		
+		RadioButton radioButtonSelecionado = (RadioButton) grupoRadioButton.getSelectedToggle();
+		validaDados(excecao, radioButtonSelecionado);
+		if(excecao.getErros().size() > 0) {
+			throw excecao;
+		}
+		
 		//novoCliente.setId(Utilitarios.tentaConverterParaInt(txtId.getText()));
 		novoCliente.setNome(txtNome.getText());
 		novoCliente.setSobrenome(txtSobrenome.getText());
-		novoCliente.setCpf(txtCpf.getText());
+		novoCliente.setCpf(txtCpf.getText());		
 		novoCliente.setEmail(txtEmail.getText());
 		novoCliente.getEndereco().setRua(txtRua.getText());
 		novoCliente.getEndereco().setNumero(txtNumero.getText());
@@ -161,11 +185,9 @@ public class ClienteFormController implements Initializable {
 		novoCliente.getEndereco().setCidade(txtCidade.getText());
 		novoCliente.getEndereco().setSigla_estado(cbxEstado.getValue());
 		novoCliente.getTelefone().setDdd(txtDdd.getText());
-		novoCliente.getTelefone().setTelefone(txtNumeroTel.getText());
-
-		RadioButton radioButtonSelecionado = (RadioButton) grupoRadioButton.getSelectedToggle();
+		novoCliente.getTelefone().setTelefone(txtNumeroTel.getText());				
 		novoCliente.getTelefone().setTipo(TipoTelefone.valueOf(radioButtonSelecionado.getText().toUpperCase()));		
-
+		
 		return novoCliente;
 	}
 	
@@ -269,5 +291,87 @@ public class ClienteFormController implements Initializable {
 				rbComercial.setSelected(true);
 			}
 		}
+	}
+	
+	private void mostraMsgErroValidacao(Map<String, String> erros) {
+		
+		associaLabelCampo();
+		
+		Set<String> erroCampos = erros.keySet();
+		Set<String> nomeCampos = associaLabelErro.keySet();		
+		
+		for(String nomeCampo : nomeCampos) {
+			if(erroCampos.contains(nomeCampo)) {
+				associaLabelErro.get(nomeCampo).setText(erros.get(nomeCampo));
+			}
+		}		
+	}
+	
+	private void validaDados(ExcecaoValidacao excecao, RadioButton rb) {
+		
+		String erroCampoVazio = "Esse campo não pode estar vazio!";	
+		
+		if(txtNome.getText() == null || txtNome.getText().trim() == "") {
+			excecao.adicionaErros("nome", erroCampoVazio);
+		}
+		
+		if(txtSobrenome.getText() == null || txtSobrenome.getText().trim() == "") {
+			excecao.adicionaErros("sobrenome", erroCampoVazio);
+		}
+		
+		if(txtCpf.getText() == null || txtCpf.getText().trim() == "") {
+			excecao.adicionaErros("cpf", erroCampoVazio);
+		}
+		
+		if(txtEmail.getText() == null || txtEmail.getText().trim() == "") {
+			excecao.adicionaErros("email", erroCampoVazio);
+		}
+		
+		if(txtRua.getText() == null || txtRua.getText().trim() == "") {
+			excecao.adicionaErros("rua", erroCampoVazio);
+		}	
+		
+		if(txtNumero.getText() == null || txtNumero.getText().trim() == "") {
+			excecao.adicionaErros("numero", erroCampoVazio);
+		}
+		
+		if(txtBairro.getText() == null || txtBairro.getText().trim() == "") {
+			excecao.adicionaErros("bairro", erroCampoVazio);
+		}
+		
+		if(txtCidade.getText() == null || txtCidade.getText().trim() == "") {
+			excecao.adicionaErros("cidade", erroCampoVazio);			
+		}
+		
+		if(cbxEstado.getValue() == null) {
+			excecao.adicionaErros("estado", "Você deve selecionar um estado!");
+		}
+		
+		if(txtDdd.getText() == null || txtDdd.getText().trim() == "") {
+			excecao.adicionaErros("ddd", erroCampoVazio);
+		}
+		
+		if(txtNumeroTel.getText() == null || txtNumeroTel.getText().trim() == "") {
+			excecao.adicionaErros("numtel", erroCampoVazio);
+		}	
+		
+		if(rb == null) {
+			excecao.adicionaErros("tipotel", "Você deve selecionar uma categoria!");
+		}
+	}
+	
+	private void associaLabelCampo() {
+		associaLabelErro.put("nome", labelErroNome);
+		associaLabelErro.put("sobrenome", labelErroSobrenome);
+		associaLabelErro.put("cpf", labelErroCpf);
+		associaLabelErro.put("email", labelErroEmail);
+		associaLabelErro.put("rua", labelErroRua);
+		associaLabelErro.put("numero", labelErroNumero);
+		associaLabelErro.put("bairro", labelErroBairro);
+		associaLabelErro.put("cidade", labelErroCidade);
+		associaLabelErro.put("estado", labelErroEstado);
+		associaLabelErro.put("ddd", labelErroDdd);
+		associaLabelErro.put("numtel", labelErroNumeroTel);
+		associaLabelErro.put("tipotel", labelErroTipoTel);		
 	}
 }
