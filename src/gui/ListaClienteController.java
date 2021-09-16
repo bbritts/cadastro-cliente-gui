@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.ListenerDadosAlterados;
 import gui.util.Alertas;
 import gui.util.Utilitarios;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,7 +29,7 @@ import javafx.stage.Stage;
 import model.domain.Cliente;
 import model.services.ClienteService;
 
-public class ListaClienteController implements Initializable{
+public class ListaClienteController implements Initializable, ListenerDadosAlterados{
 	
 	private ClienteService servico;
 	
@@ -155,6 +156,8 @@ public class ListaClienteController implements Initializable{
 			controlador.setCliente(cliente);
 			controlador.setClienteService(new ClienteService());
 			
+			//Se inscreve para ouvir um evento de dado alterado no ClienteFormController
+			controlador.adicionaListenerDadosAlterados(this);			
 			
 			//Carrega no formulário com as informações do cliente injetado
 			controlador.atualizaDadosForm();
@@ -182,5 +185,11 @@ public class ListaClienteController implements Initializable{
 		catch (IOException e) {
 			Alertas.mostraAlerta("IO Exception", "Erro ao carregar a View", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void qdoDadoAlterado() {
+		//Quando um evento de dado alterado ocorre este objeto atualiza a tabela de clientes
+		atualizaTabelaCliente();		
 	}
 }

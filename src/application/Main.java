@@ -11,8 +11,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	private static Scene cenaPrincipal;
-	
+	private static Scene cenaPrincipal;	
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -33,7 +32,9 @@ public class Main extends Application {
 			primaryStage.setTitle("PiseBem - Calçados Incríveis");
 			
 			//Muda o icone na barra de tarefa
-			primaryStage.getIcons().add(new Image("https://raw.githubusercontent.com/bbritts/cadastro-cliente-gui/master/assets/icon.png"));
+			primaryStage.getIcons().add(new Image(
+					"https://raw.githubusercontent.com/bbritts/cadastro-cliente-gui/master/assets/icon.png"
+					));
 			
 			primaryStage.show();
 		} catch (IOException e) {

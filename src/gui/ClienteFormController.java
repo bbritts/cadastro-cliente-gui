@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import database.DBException;
+import gui.listeners.ListenerDadosAlterados;
 import gui.util.Alertas;
 import gui.util.Restricoes;
 import gui.util.Utilitarios;
@@ -27,6 +30,7 @@ public class ClienteFormController implements Initializable {
 	private Cliente cliente;
 	private ClienteService servico;
 	final ToggleGroup grupoRadioButton = new ToggleGroup();
+	private List<ListenerDadosAlterados> listenersDadosAlterados = new ArrayList<>();
 
 	@FXML
 	private TextField txtId;
@@ -100,6 +104,11 @@ public class ClienteFormController implements Initializable {
 	public void setClienteService(ClienteService servico) {
 		this.servico = servico;
 	}
+	
+	//Método responsável por inscrever um objeto na lista de listeners de eventos de dados alterados
+	public void adicionaListenerDadosAlterados(ListenerDadosAlterados listener) {
+		listenersDadosAlterados.add(listener);
+	}
 
 	// Métodos a executar ao clicar nos botões
 	@FXML
@@ -113,8 +122,14 @@ public class ClienteFormController implements Initializable {
 		}
 		
 		try {
-			cliente = capturaDadosForm();		
+			
+			//Instancia um objeto cliente com os dados capturados do formulário
+			cliente = capturaDadosForm();
+			
 			servico.cadastrarOuAtualizar(cliente);
+			
+			//Notifica os listeners que um evento de dados alterados ocorreu
+			notificaListenersDadosAlterados();
 			
 			//Método para fechar a janela após os dados serem salvos
 			Utilitarios.stageAtual(evento).close();
@@ -152,6 +167,13 @@ public class ClienteFormController implements Initializable {
 		novoCliente.getTelefone().setTipo(TipoTelefone.valueOf(radioButtonSelecionado.getText().toUpperCase()));		
 
 		return novoCliente;
+	}
+	
+	private void notificaListenersDadosAlterados() {
+		
+		for(ListenerDadosAlterados listener : listenersDadosAlterados) {
+			listener.qdoDadoAlterado();
+		}		
 	}
 
 	@Override
