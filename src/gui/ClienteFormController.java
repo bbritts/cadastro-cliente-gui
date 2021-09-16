@@ -38,7 +38,7 @@ public class ClienteFormController implements Initializable {
 	//Cria lista de listeners de eventos
 	private List<ListenerDadosAlterados> listenersDadosAlterados = new ArrayList<>();
 	
-	//ISSO AQUI É NOVO	
+	//Declaração de um Map com nome do campo como chave e seu respectivo label como valor	
 	public Map<String, Label> associaLabelErro = new HashMap<>();	
 
 	@FXML
@@ -168,10 +168,7 @@ public class ClienteFormController implements Initializable {
 		Cliente novoCliente = new Cliente();
 		
 		RadioButton radioButtonSelecionado = (RadioButton) grupoRadioButton.getSelectedToggle();
-		validaDados(excecao, radioButtonSelecionado);
-		if(excecao.getErros().size() > 0) {
-			throw excecao;
-		}
+		validaDados(excecao, radioButtonSelecionado);		
 		
 		//novoCliente.setId(Utilitarios.tentaConverterParaInt(txtId.getText()));
 		novoCliente.setNome(txtNome.getText());
@@ -293,20 +290,6 @@ public class ClienteFormController implements Initializable {
 		}
 	}
 	
-	private void mostraMsgErroValidacao(Map<String, String> erros) {
-		
-		associaLabelCampo();
-		
-		Set<String> erroCampos = erros.keySet();
-		Set<String> nomeCampos = associaLabelErro.keySet();		
-		
-		for(String nomeCampo : nomeCampos) {
-			if(erroCampos.contains(nomeCampo)) {
-				associaLabelErro.get(nomeCampo).setText(erros.get(nomeCampo));
-			}
-		}		
-	}
-	
 	private void validaDados(ExcecaoValidacao excecao, RadioButton rb) {
 		
 		String erroCampoVazio = "Esse campo não pode estar vazio!";	
@@ -358,6 +341,10 @@ public class ClienteFormController implements Initializable {
 		if(rb == null) {
 			excecao.adicionaErros("tipotel", "Você deve selecionar uma categoria!");
 		}
+		
+		if(excecao.getErros().size() > 0) {
+			throw excecao;
+		}
 	}
 	
 	private void associaLabelCampo() {
@@ -373,5 +360,19 @@ public class ClienteFormController implements Initializable {
 		associaLabelErro.put("ddd", labelErroDdd);
 		associaLabelErro.put("numtel", labelErroNumeroTel);
 		associaLabelErro.put("tipotel", labelErroTipoTel);		
+	}
+	
+	private void mostraMsgErroValidacao(Map<String, String> erros) {
+		
+		associaLabelCampo();
+		
+		Set<String> camposErros = erros.keySet();
+		Set<String> nomesCamposLabels = associaLabelErro.keySet();		
+		
+		for(String campoChave : nomesCamposLabels) {
+			if(camposErros.contains(campoChave)) {
+				associaLabelErro.get(campoChave).setText(erros.get(campoChave));
+			}
+		}		
 	}
 }
