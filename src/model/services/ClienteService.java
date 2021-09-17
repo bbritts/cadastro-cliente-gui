@@ -25,4 +25,8 @@ public class ClienteService {
 			acessoDados.atualiza(cliente);
 		}		
 	}
+	
+	public void deletar(Cliente cliente) {
+		acessoDados.deletaPorId(cliente.getId());
+	}
 }

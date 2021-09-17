@@ -3,9 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import database.DBException;
 import gui.listeners.ListenerDadosAlterados;
 import gui.util.Alertas;
 import gui.util.Utilitarios;
@@ -20,6 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -79,6 +82,9 @@ public class ListaClienteController implements Initializable, ListenerDadosAlter
 
 	@FXML
 	private TableColumn<Cliente, Cliente> colunaEditar;
+	
+	@FXML
+	private TableColumn<Cliente, Cliente> colunaApagar;
 
 	@FXML
 	private Button botaoNovoCadastro;
@@ -126,8 +132,9 @@ public class ListaClienteController implements Initializable, ListenerDadosAlter
 		// Carrega os itens na TableView
 		tabelaClientes.setItems(listaVisivel);
 		
-		// Cria o botao de editar na última coluna
+		// Cria os botoes de editar e apagar
 		criaBotaoEditar();
+		criaBotaoApagar();
 	}
 
 	private void inicializaColunas() {
@@ -230,6 +237,52 @@ public class ListaClienteController implements Initializable, ListenerDadosAlter
 									));
 			}
 		});
+	}
+	
+	private void criaBotaoApagar() {
+		colunaApagar.setCellValueFactory(parametro -> new ReadOnlyObjectWrapper<>(parametro.getValue()));
+		colunaApagar.setCellFactory(parametro -> new TableCell<Cliente, Cliente>() {
+			private final Button botao = new Button("apagar");
+			
+			@Override
+			protected void updateItem(Cliente clienteApagavel, boolean vazio) {
+				super.updateItem(clienteApagavel, vazio);
+				
+				if (clienteApagavel == null) {
+					setGraphic(null);
+					return;
+				}
+				
+				setGraphic(botao);
+				botao.setOnAction(
+						evento -> removeCliente(clienteApagavel)
+								);
+			}
+		});
+	}
+	
+	
+
+	private void removeCliente(Cliente clienteApagavel) {
+		Optional<ButtonType> resposta = Alertas.mostraConfirmacao("Confirmação de remoção", "Tem certeza que deseja apagar?");
+		
+		if(resposta.get() == ButtonType.OK) {
+			
+			if(servico == null) {
+				throw new IllegalStateException("Serviço estava nulo");
+			}
+			
+			try {
+				// Chama o método de deletar implementado na ClienteService
+				servico.deletar(clienteApagavel);
+				
+				// Força a atualização da tabela ao apagar um cliente
+				atualizaTabelaCliente();
+			}
+			catch(DBException e) {
+				Alertas.mostraAlerta("Erro ao remover o cliente", null, e.getMessage(), AlertType.ERROR);
+			}
+		}	
 	}
 
 	@Override

@@ -35,8 +35,8 @@ public class Restricoes {
 	
 	public static void textFieldApenasLetras(TextField txt) {
 		txt.textProperty().addListener((obs, oldValue, newValue) -> {
-	        if (newValue != null && !newValue.matches("\\sa-zA-Z*")) {
-	            txt.setText(newValue.replaceAll("[^\\sa-zA-Z]", ""));
+	        if (newValue != null && !newValue.matches("\\sa-zA-ZαΰβγιθκνοστυφϊηρΑΐΒΓΙΘΝΟΣΤΥΦΪΗΡ'*")) {
+	            txt.setText(newValue.replaceAll("[^\\sa-zA-ZαΰβγιθκνοστυφϊηρΑΐΒΓΙΘΝΟΣΤΥΦΪΗΡ']", ""));
 	        }
 	    });
 	}
